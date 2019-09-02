@@ -11,16 +11,14 @@ public class DrawDivisionProcessor {
     private int result;
     private int finalResidue;
 
-    public void process(int dividend, int divider){
+    public void process(int dividend, int divider) {
         this.dividend = dividend;
         this.divider = divider;
-        if (Math.abs(dividend) < Math.abs(divider)){
+        if (Math.abs(dividend) < Math.abs(divider)) {
             drawFirstDivisionStep();
             finalResidue = dividend;
             System.out.println(" " + finalResidue);
-        }
-
-        else {
+        } else {
             result = dividend / divider;
             dividendAsString = String.valueOf(Math.abs(dividend));
             dividerAsString = String.valueOf(Math.abs(divider));
@@ -38,7 +36,7 @@ public class DrawDivisionProcessor {
         }
     }
 
-    private void divisionStep(){
+    private void divisionStep() {
         chosenNumber = dividendAsString.substring(0, dividerAsString.length());
         if (Integer.valueOf(chosenNumber) < Integer.valueOf(dividerAsString)) {
             chosenNumber = dividendAsString.substring(0, dividerAsString.length() + 1);
@@ -54,7 +52,7 @@ public class DrawDivisionProcessor {
         dividendAsString = residue + dividendAsString.substring(chosenNumber.length());
     }
 
-    private void drawFirstDivisionStep(){
+    private void drawFirstDivisionStep() {
         System.out.println("_" + dividend + " | " + divider);
         System.out.println(" " + chosenNumberWithoutResidue + drawSeparators(dividendAsString.length() -
                 chosenNumberWithoutResidue.length()) +
@@ -62,19 +60,19 @@ public class DrawDivisionProcessor {
         System.out.println(" - " + drawSeparators(dividerAsString.length() - 1) + " | " + result);
     }
 
-    private void drawDivisionStep(){
+    private void drawDivisionStep() {
         howMuchSeparators = String.valueOf(dividend).length() - dividendAsString.length();
         System.out.println(drawSeparators(howMuchSeparators) + "_" + chosenNumber);
         System.out.println(drawSeparators(howMuchSeparators + 1) + chosenNumberWithoutResidue);
         System.out.println(drawSeparators(howMuchSeparators + 1) + "--");
     }
 
-    private String drawSeparators(int separatorsQuantity){
-        StringBuilder result = new StringBuilder();
-        for (int i = 1; i <= separatorsQuantity; i++){
-            result.append(" ");
+    private String drawSeparators(int separatorsQuantity) {
+        String result = "";
+        for (int i = 1; i <= separatorsQuantity; i++) {
+            result = result + " ";
         }
-        return result.toString();
+        return result;
     }
 
     public int getResult() {

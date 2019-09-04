@@ -1,6 +1,6 @@
-package com.foxminded.integer_division;
+package com.foxminded.integerdivision;
 
-import com.foxminded.integer_division.processors.DrawingProcessor;
+import com.foxminded.integerdivision.processors.DrawingProcessor;
 
 import java.util.Scanner;
 

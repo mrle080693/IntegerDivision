@@ -6,8 +6,7 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        try {
-            Scanner scanner = new Scanner(System.in);
+        try (Scanner scanner = new Scanner(System.in)) {
             System.out.println("Enter the dividend");
             int dividend = scanner.nextInt();
             System.out.println("Enter the divider");
@@ -20,3 +19,4 @@ public class Main {
         }
     }
 }
+

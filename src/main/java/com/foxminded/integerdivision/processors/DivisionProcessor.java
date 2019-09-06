@@ -1,66 +1,70 @@
 package com.foxminded.integerdivision.processors;
 
-import java.util.LinkedList;
-
 public class DivisionProcessor {
-    public LinkedList<String> process(Integer dividend, Integer divider) {
-        LinkedList<String> header = getHeader(dividend, divider);
+    public String process(Integer dividend, Integer divider) {
+        String result = "";
+        try {
+            String header = getHeader(dividend, divider);
+            String body = getBody(dividend, divider);
 
-        LinkedList<String> result = getBody(header, dividend, divider);
-
+            result = header + body;
+        } catch (Exception e) {
+            result = getExceptionMessage();
+        }
         return result;
     }
 
-    private LinkedList<String> getHeader(int dividend, int divider) {
+    private String getHeader(int dividend, int divider) {
         String dividendAsString = String.valueOf(dividend);
         String dividerAsString = String.valueOf(divider);
         String divisionResult = String.valueOf(dividend / divider);
-        LinkedList<String> header = new LinkedList<>();
+        StringBuilder header = new StringBuilder();
 
         String firstLine = " " + dividendAsString + "|" + dividerAsString;
-        String thirdLine = returnInput("*", dividendAsString.length()) + "|" + divisionResult;
-        String secondLine = returnInput("-", thirdLine.length());
+        int separatorsAmountForSecondLine = dividendAsString.length() + String.valueOf(dividend / divider).length() + 1;
+        String secondLine = getInputXTimes("-", separatorsAmountForSecondLine);
+        String thirdLine = " " + getInputXTimes("*", dividendAsString.length()) + "|" + divisionResult;
 
-        header.add(firstLine);
-        header.add(secondLine);
-        header.add(thirdLine);
+        header.append(firstLine).append("\n");
+        header.append(secondLine).append("\n");
+        header.append(thirdLine).append("\n");
 
-        return header;
+        return header.toString();
     }
 
-    private LinkedList<String> getBody(LinkedList<String> header, int dividend, int divider) {
+    private String getBody(int dividend, int divider) {
         String dividendAsString = String.valueOf(dividend);
         String absDividendAsString = String.valueOf(Math.abs(dividend));
         String absDividerAsString = String.valueOf(Math.abs(divider));
         String finalResidue = String.valueOf(dividend % divider);
         int amountSeparators;
-        LinkedList<String> result = header;
+        StringBuilder body = new StringBuilder();
 
         if (Math.abs(dividend) >= Math.abs(divider)) {
             for (int i = 0; !absDividendAsString.equals(""); i++) {
-                String numberWhichBiggerThanDivider = getBiggerThanDivider(absDividendAsString, absDividerAsString);
-                String numberWhichBiggerThanDividerWithoutResidue =
-                        getBiggerThanDividerWithoutResidue(divider, numberWhichBiggerThanDivider);
-                String residue = getResidue(numberWhichBiggerThanDivider, numberWhichBiggerThanDividerWithoutResidue);
-                absDividendAsString =
-                        rewriteAbsDividendAsString(absDividendAsString, residue, numberWhichBiggerThanDivider);
+                if (Integer.valueOf(absDividendAsString) < divider) {
+                    absDividendAsString = "";
+                }
+                String biggerThanDivider = getBiggerThanDivider(absDividendAsString, absDividerAsString);
+                String biggerThanDividerWithoutResidue = getBiggerThanDividerWithoutResidue(divider, biggerThanDivider);
+                String residue = getResidue(biggerThanDivider, biggerThanDividerWithoutResidue);
+                absDividendAsString = rewriteAbsDividendAsString(absDividendAsString, residue, biggerThanDivider);
 
-                if (!numberWhichBiggerThanDivider.equals("0")) {
-                    amountSeparators = dividendAsString.length() - absDividendAsString.length() - 2;
-                    result.add(returnInput(" ", amountSeparators) + "_" + numberWhichBiggerThanDivider);
-                    result.add(returnInput(" ", amountSeparators) + " " +
-                            numberWhichBiggerThanDividerWithoutResidue);
+                if (!biggerThanDivider.equals("0")) {
+                    amountSeparators = dividendAsString.length() - absDividendAsString.length() - 3;
+                    body.append(getInputXTimes(" ", amountSeparators)).append("_").append(biggerThanDivider).append("\n");
+                    body.append(getInputXTimes(" ", amountSeparators)).append(" ").append(biggerThanDividerWithoutResidue).append("\n");
                 }
             }
         }
 
         amountSeparators = dividendAsString.length() - finalResidue.length();
-        result.add(returnInput(" ", amountSeparators) + finalResidue);
+        body.append(getInputXTimes(" ", amountSeparators)).append(finalResidue);
 
-        return result;
+        return body.toString();
     }
 
-    private String returnInput(String input, int amount) {
+    private String getInputXTimes(String input, int amount) {
         String result = "";
 
         for (int i = 1; i <= amount; i++) {
@@ -70,15 +74,15 @@ public class DivisionProcessor {
     }
 
     private String getBiggerThanDivider(String absDividendAsString, String absDividerAsString) {
-        String chosenNumber = "0";
+        String biggerThanDivider = "0";
         if (absDividendAsString.length() >= absDividerAsString.length()) {
-            chosenNumber = absDividendAsString.substring(0, absDividerAsString.length());
+            biggerThanDivider = absDividendAsString.substring(0, absDividerAsString.length());
         }
-        if (Integer.valueOf(chosenNumber) < Integer.valueOf(absDividerAsString) &&
+        if (Integer.valueOf(biggerThanDivider) < Integer.valueOf(absDividerAsString) &&
                 absDividerAsString.length() < absDividendAsString.length()) {
-            chosenNumber = absDividendAsString.substring(0, absDividerAsString.length() + 1);
+            biggerThanDivider = absDividendAsString.substring(0, absDividerAsString.length() + 1);
         }
-        return chosenNumber;
+        return biggerThanDivider;
     }
 
     private String getBiggerThanDividerWithoutResidue(int divider, String chosenNumber) {
@@ -94,7 +98,20 @@ public class DivisionProcessor {
     }
 
     private String rewriteAbsDividendAsString(String absDividendAsString, String residue, String chosenNumber) {
-        String result = residue + absDividendAsString.substring(chosenNumber.length());
+        String result = residue + absDividendAsString;
+        if (absDividendAsString.length() >= chosenNumber.length()) {
+            result = residue + absDividendAsString.substring(chosenNumber.length());
+        }
         return result;
+    }
+
+    public String getExceptionMessage() {
+        String message = "Somthing Wrong!!!" + "\n" +
+                "1) Divider must not to be 0" + "\n" +
+                "2) Input must not be null" + "\n" +
+                "3) Input have to be in the range of int" + "\n" +
+                "4) Input must not be a letter";
+
+        return message;
     }
 }

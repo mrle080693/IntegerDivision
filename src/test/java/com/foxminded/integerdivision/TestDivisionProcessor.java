@@ -4,103 +4,126 @@ import com.foxminded.integerdivision.processors.DivisionProcessor;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
-import java.util.LinkedList;
-
 import static org.junit.jupiter.api.Assertions.assertEquals;
 
 class TestDivisionProcessor {
     private DivisionProcessor divisionProcessor = new DivisionProcessor();
-    private LinkedList<String> expected;
-    private LinkedList<String> actual;
 
     @Test
-    void processMustReturnNullPointerExceptionWhenInputIsNull() {
-        Assertions.assertThrows(NullPointerException.class, () -> {
-            divisionProcessor.process(null, 2);
-        });
+    void processMustReturnExceptionMessageWhenInputIsNull() {
+        String expected = divisionProcessor.getExceptionMessage();
+        String actual = divisionProcessor.process(null, 2);
+
+        assertEquals(expected, actual);
     }
 
     @Test
-    void processMustReturnArithmeticExceptionWhenDividerIsZero() {
-        Assertions.assertThrows(ArithmeticException.class, () -> {
-            divisionProcessor.process(2, 0);
+    void processMustReturnExceptionMessageWhenDividerIsZero() {
+        String expected = divisionProcessor.getExceptionMessage();
+        String actual = divisionProcessor.process(2, 0);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void processMustReturnNumberFormatExceptionWhenInputIsLetter() {
+        Assertions.assertThrows(NumberFormatException.class, () -> {
+            divisionProcessor.process(Integer.valueOf("asd"), 2);
         });
     }
 
     @Test
     void processMustReturnCorrectResult() {
-        expected = new LinkedList<>();
-        expected.add(" 22|2");
-        expected.add("-----");
-        expected.add("**|11");
-        expected.add("_2");
-        expected.add(" 2");
-        expected.add("_2");
-        expected.add(" 2");
-        expected.add(" 0");
-        actual = divisionProcessor.process(22, 2);
-        assertEquals(expected, actual);
-    }
+        String expected = " 9|3\n" +
+                "---\n" +
+                " *|3\n" +
+                "_9\n" +
+                " 9\n" +
+                "0";
+        String actual = divisionProcessor.process(9, 3);
 
-    @Test
-    void processMustReturnCorrectResultWhenDividendIsBig() {
-        expected = new LinkedList<>();
-        expected.add(" 9999999|9");
-        expected.add("---------------");
-        expected.add("*******|1111111");
-        expected.add("_9");
-        expected.add(" 9");
-        expected.add("_9");
-        expected.add(" 9");
-        expected.add(" _9");
-        expected.add("  9");
-        expected.add("  _9");
-        expected.add("   9");
-        expected.add("   _9");
-        expected.add("    9");
-        expected.add("    _9");
-        expected.add("     9");
-        expected.add("     _9");
-        expected.add("      9");
-        expected.add("      0");
-        actual = divisionProcessor.process(9999999, 9);
         assertEquals(expected, actual);
     }
 
     @Test
     void processMustReturnCorrectResultWhenDividendIsLessThanDivider() {
-        expected = new LinkedList<>();
-        expected.add(" 2|3");
-        expected.add("---");
-        expected.add("*|0");
-        expected.add("2");
-        actual = divisionProcessor.process(2, 3);
+        String expected = " 1|2\n" +
+                "---\n" +
+                " *|0\n" +
+                "1";
+        String actual = divisionProcessor.process(1, 2);
+
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void processMustReturnCorrectResultWhenDividendIsBig() {
+        String expected = " 1231231231|2\n" +
+                "--------------------\n" +
+                " **********|615615615\n" +
+                "_12\n" +
+                " 12\n" +
+                "_3\n" +
+                " 2\n" +
+                "_11\n" +
+                " 10\n" +
+                "  _12\n" +
+                "   12\n" +
+                "  _3\n" +
+                "   2\n" +
+                "   _11\n" +
+                "    10\n" +
+                "     _12\n" +
+                "      12\n" +
+                "     _3\n" +
+                "      2\n" +
+                "      _11\n" +
+                "       10\n" +
+                "         1";
+        String actual = divisionProcessor.process(1231231231, 2);
+
         assertEquals(expected, actual);
     }
 
     @Test
     void processMustReturnCorrectResultWhenDividendIsLessThanZero() {
-        expected = new LinkedList<>();
-        expected.add(" -6|3");
-        expected.add("-----");
-        expected.add("**|-2");
-        expected.add("_6");
-        expected.add(" 6");
-        expected.add(" 0");
-        actual = divisionProcessor.process(-6, 3);
+        String expected = " -99999|3\n" +
+                "-------------\n" +
+                " ******|-33333\n" +
+                "_9\n" +
+                " 9\n" +
+                "_9\n" +
+                " 9\n" +
+                " _9\n" +
+                "  9\n" +
+                "  _9\n" +
+                "   9\n" +
+                "   _9\n" +
+                "    9\n" +
+                "     0";
+        String actual = divisionProcessor.process(-99999, 3);
+
         assertEquals(expected, actual);
     }
 
     @Test
     void processMustReturnCorrectResultWhenDividendAndDividerAreLessThanZero() {
-        expected = new LinkedList<>();
-        expected.add(" -6|-3");
-        expected.add("----");
-        expected.add("**|2");
-        expected.add("_6");
-        expected.add(" 6");
-        expected.add(" 0");
-        actual = divisionProcessor.process(-6, -3);
+        String expected = " -7897789|-234\n" +
+                "--------------\n" +
+                " ********|33751\n" +
+                "_789\n" +
+                " 702\n" +
+                "_877\n" +
+                " 702\n" +
+                "_1757\n" +
+                " 1638\n" +
+                "  _1198\n" +
+                "   1170\n" +
+                "   _289\n" +
+                "    234\n" +
+                "     -55";
+        String actual = divisionProcessor.process(-7897789, -234);
+
         assertEquals(expected, actual);
     }
 }

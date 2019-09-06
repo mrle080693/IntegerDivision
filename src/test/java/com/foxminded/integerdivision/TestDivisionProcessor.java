@@ -40,6 +40,67 @@ class TestDivisionProcessor {
         expected.add(" 0");
         actual = divisionProcessor.process(22, 2);
         assertEquals(expected, actual);
+    }
 
+    @Test
+    void processMustReturnCorrectResultWhenDividendIsBig() {
+        expected = new LinkedList<>();
+        expected.add(" 9999999|9");
+        expected.add("---------------");
+        expected.add("*******|1111111");
+        expected.add("_9");
+        expected.add(" 9");
+        expected.add("_9");
+        expected.add(" 9");
+        expected.add(" _9");
+        expected.add("  9");
+        expected.add("  _9");
+        expected.add("   9");
+        expected.add("   _9");
+        expected.add("    9");
+        expected.add("    _9");
+        expected.add("     9");
+        expected.add("     _9");
+        expected.add("      9");
+        expected.add("      0");
+        actual = divisionProcessor.process(9999999, 9);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void processMustReturnCorrectResultWhenDividendIsLessThanDivider() {
+        expected = new LinkedList<>();
+        expected.add(" 2|3");
+        expected.add("---");
+        expected.add("*|0");
+        expected.add("2");
+        actual = divisionProcessor.process(2, 3);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void processMustReturnCorrectResultWhenDividendIsLessThanZero() {
+        expected = new LinkedList<>();
+        expected.add(" -6|3");
+        expected.add("-----");
+        expected.add("**|-2");
+        expected.add("_6");
+        expected.add(" 6");
+        expected.add(" 0");
+        actual = divisionProcessor.process(-6, 3);
+        assertEquals(expected, actual);
+    }
+
+    @Test
+    void processMustReturnCorrectResultWhenDividendAndDividerAreLessThanZero() {
+        expected = new LinkedList<>();
+        expected.add(" -6|-3");
+        expected.add("----");
+        expected.add("**|2");
+        expected.add("_6");
+        expected.add(" 6");
+        expected.add(" 0");
+        actual = divisionProcessor.process(-6, -3);
+        assertEquals(expected, actual);
     }
 }

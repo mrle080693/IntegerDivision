@@ -1,16 +1,21 @@
 package com.foxminded.integerdivision.processors;
 
 public class DivisionProcessor {
+    private IllegalArgumentException illegalArgumentException = new IllegalArgumentException();
+
     public String process(Integer dividend, Integer divider) {
-        String result = "";
+        String result = null;
         try {
             String header = getHeader(dividend, divider);
             String body = getBody(dividend, divider);
 
             result = header + body;
-        } catch (Exception e) {
-            result = getExceptionMessage();
+        } catch (ArithmeticException | NumberFormatException e) {
+            throw illegalArgumentException;
+        } catch (NullPointerException e) {
+            result = null;
         }
+
         return result;
     }
 
@@ -22,8 +27,8 @@ public class DivisionProcessor {
 
         String firstLine = " " + dividendAsString + "|" + dividerAsString;
         int separatorsAmountForSecondLine = dividendAsString.length() + String.valueOf(dividend / divider).length() + 1;
-        String secondLine = getInputXTimes("-", separatorsAmountForSecondLine);
-        String thirdLine = " " + getInputXTimes("*", dividendAsString.length()) + "|" + divisionResult;
+        String secondLine = getInput("-", separatorsAmountForSecondLine);
+        String thirdLine = " " + getInput("*", dividendAsString.length()) + "|" + divisionResult;
 
         header.append(firstLine).append("\n");
         header.append(secondLine).append("\n");
@@ -37,7 +42,7 @@ public class DivisionProcessor {
         String absDividendAsString = String.valueOf(Math.abs(dividend));
         String absDividerAsString = String.valueOf(Math.abs(divider));
         String finalResidue = String.valueOf(dividend % divider);
-        int amountSeparators;
+        int amount;
         StringBuilder body = new StringBuilder();
 
         if (Math.abs(dividend) >= Math.abs(divider)) {
@@ -45,26 +50,26 @@ public class DivisionProcessor {
                 if (Integer.valueOf(absDividendAsString) < divider) {
                     absDividendAsString = "";
                 }
-                String biggerThanDivider = getBiggerThanDivider(absDividendAsString, absDividerAsString);
-                String biggerThanDividerWithoutResidue = getBiggerThanDividerWithoutResidue(divider, biggerThanDivider);
-                String residue = getResidue(biggerThanDivider, biggerThanDividerWithoutResidue);
-                absDividendAsString = rewriteAbsDividendAsString(absDividendAsString, residue, biggerThanDivider);
+                String incompletePrivate = getIncompletePrivate(absDividendAsString, absDividerAsString);
+                String nearToIncompletePrivate = getNearToIncompletePrivate(divider, incompletePrivate);
+                String residue = getResidue(incompletePrivate, nearToIncompletePrivate);
+                absDividendAsString = rewriteAbsDividendAsString(absDividendAsString, residue, incompletePrivate);
 
-                if (!biggerThanDivider.equals("0")) {
-                    amountSeparators = dividendAsString.length() - absDividendAsString.length() - 3;
-                    body.append(getInputXTimes(" ", amountSeparators)).append("_").append(biggerThanDivider).append("\n");
-                    body.append(getInputXTimes(" ", amountSeparators)).append(" ").append(biggerThanDividerWithoutResidue).append("\n");
+                if (!incompletePrivate.equals("0")) {
+                    amount = dividendAsString.length() - absDividendAsString.length() - 3;
+                    body.append(getInput(" ", amount)).append("_").append(incompletePrivate).append("\n");
+                    body.append(getInput(" ", amount)).append(" ").append(nearToIncompletePrivate).append("\n");
                 }
             }
         }
 
-        amountSeparators = dividendAsString.length() - finalResidue.length();
-        body.append(getInputXTimes(" ", amountSeparators)).append(finalResidue);
+        amount = dividendAsString.length() - finalResidue.length();
+        body.append(getInput(" ", amount)).append(finalResidue);
 
         return body.toString();
     }
 
-    private String getInputXTimes(String input, int amount) {
+    private String getInput(String input, int amount) {
         String result = "";
 
         for (int i = 1; i <= amount; i++) {
@@ -73,19 +78,19 @@ public class DivisionProcessor {
         return result;
     }
 
-    private String getBiggerThanDivider(String absDividendAsString, String absDividerAsString) {
-        String biggerThanDivider = "0";
+    private String getIncompletePrivate(String absDividendAsString, String absDividerAsString) {
+        String incompletePrivate = "0";
         if (absDividendAsString.length() >= absDividerAsString.length()) {
-            biggerThanDivider = absDividendAsString.substring(0, absDividerAsString.length());
+            incompletePrivate = absDividendAsString.substring(0, absDividerAsString.length());
         }
-        if (Integer.valueOf(biggerThanDivider) < Integer.valueOf(absDividerAsString) &&
+        if (Integer.valueOf(incompletePrivate) < Integer.valueOf(absDividerAsString) &&
                 absDividerAsString.length() < absDividendAsString.length()) {
-            biggerThanDivider = absDividendAsString.substring(0, absDividerAsString.length() + 1);
+            incompletePrivate = absDividendAsString.substring(0, absDividerAsString.length() + 1);
         }
-        return biggerThanDivider;
+        return incompletePrivate;
     }
 
-    private String getBiggerThanDividerWithoutResidue(int divider, String chosenNumber) {
+    private String getNearToIncompletePrivate(int divider, String chosenNumber) {
         return String.valueOf(Integer.valueOf(chosenNumber) / divider * divider);
     }
 
@@ -103,15 +108,5 @@ public class DivisionProcessor {
             result = residue + absDividendAsString.substring(chosenNumber.length());
         }
         return result;
-    }
-
-    public String getExceptionMessage() {
-        String message = "Somthing Wrong!!!" + "\n" +
-                "1) Divider must not to be 0" + "\n" +
-                "2) Input must not be null" + "\n" +
-                "3) Input have to be in the range of int" + "\n" +
-                "4) Input must not be a letter";
-
-        return message;
     }
 }

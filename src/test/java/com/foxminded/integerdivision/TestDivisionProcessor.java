@@ -5,24 +5,21 @@ import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNull;
 
 class TestDivisionProcessor {
     private DivisionProcessor divisionProcessor = new DivisionProcessor();
 
     @Test
-    void processMustReturnExceptionMessageWhenInputIsNull() {
-        String expected = divisionProcessor.getExceptionMessage();
-        String actual = divisionProcessor.process(null, 2);
-
-        assertEquals(expected, actual);
+    void processMustReturnNullIfInputIsNull() {
+        assertNull(divisionProcessor.process(1, null));
     }
 
     @Test
-    void processMustReturnExceptionMessageWhenDividerIsZero() {
-        String expected = divisionProcessor.getExceptionMessage();
-        String actual = divisionProcessor.process(2, 0);
-
-        assertEquals(expected, actual);
+    void processMustReturnIllegalArgumentExceptionWhenDividerIsZero() {
+        Assertions.assertThrows(IllegalArgumentException.class, () -> {
+            divisionProcessor.process(2, 0);
+        });
     }
 
     @Test

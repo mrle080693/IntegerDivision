@@ -1,7 +1,6 @@
 package com.foxminded.integerdivision.processors;
 
 public class DivisionProcessor {
-    private IllegalArgumentException illegalArgumentException = new IllegalArgumentException();
 
     public String process(Integer dividend, Integer divider) {
         String result = null;
@@ -10,8 +9,10 @@ public class DivisionProcessor {
             String body = getBody(dividend, divider);
 
             result = header + body;
-        } catch (ArithmeticException | NumberFormatException e) {
-            throw illegalArgumentException;
+        } catch (ArithmeticException e) {
+            throw new IllegalArgumentException("Divider can not be zero!");
+        } catch (NumberFormatException e) {
+            throw new IllegalArgumentException("Input have to be Integer!");
         } catch (NullPointerException e) {
             result = null;
         }
@@ -27,8 +28,8 @@ public class DivisionProcessor {
 
         String firstLine = " " + dividendAsString + "|" + dividerAsString;
         int separatorsAmountForSecondLine = dividendAsString.length() + String.valueOf(dividend / divider).length() + 1;
-        String secondLine = getInput("-", separatorsAmountForSecondLine);
-        String thirdLine = " " + getInput("*", dividendAsString.length()) + "|" + divisionResult;
+        String secondLine = getMultipleInput("-", separatorsAmountForSecondLine);
+        String thirdLine = " " + getMultipleInput("*", dividendAsString.length()) + "|" + divisionResult;
 
         header.append(firstLine).append("\n");
         header.append(secondLine).append("\n");
@@ -57,19 +58,19 @@ public class DivisionProcessor {
 
                 if (!incompletePrivate.equals("0")) {
                     amount = dividendAsString.length() - absDividendAsString.length() - 3;
-                    body.append(getInput(" ", amount)).append("_").append(incompletePrivate).append("\n");
-                    body.append(getInput(" ", amount)).append(" ").append(nearToIncompletePrivate).append("\n");
+                    body.append(getMultipleInput(" ", amount)).append("_").append(incompletePrivate).append("\n");
+                    body.append(getMultipleInput(" ", amount)).append(" ").append(nearToIncompletePrivate).append("\n");
                 }
             }
         }
 
         amount = dividendAsString.length() - finalResidue.length();
-        body.append(getInput(" ", amount)).append(finalResidue);
+        body.append(getMultipleInput(" ", amount)).append(finalResidue);
 
         return body.toString();
     }
 
-    private String getInput(String input, int amount) {
+    private String getMultipleInput(String input, int amount) {
         String result = "";
 
         for (int i = 1; i <= amount; i++) {

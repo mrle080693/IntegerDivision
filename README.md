@@ -1,2 +1,2 @@
 # IntegerDivision
-Programme print division process of two input from user numbers 
+Programme print division process of two inputs from user numbers 
